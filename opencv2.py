@@ -3,6 +3,7 @@ __author__ = '% Arisa Kitagishi and Barbara Cotter %'
 import cv2
 import glob
 import numpy as np
+import time
 from matplotlib import pyplot as plt
 
 '''images directory should by located inside your project main directory(Don't include it in the submission).'''
@@ -35,7 +36,7 @@ class object_recognition():
                 template = cv2.imread(tmp, 0)
                 '''TODO: Apply template Matching'''
                 res = cv2.matchTemplate(img, template, cv2.TM_CCOEFF_NORMED)
-                template_matching = 1 if float(res[0])>0.9 else 0
+                template_matching = float(res)
 
                 '''TODO: Apply color histogram. OpenCV function is more faster than (around 40X) than np.histogram(). So stick with OpenCV function.'''
                 for c2, col2 in enumerate(color):
@@ -61,35 +62,37 @@ class object_recognition():
 
                 #print 'printing sorted for image:' + str(i) + ' and template:' + str(j)
                 # Apply ratio test
+                valid_distance = 0
                 good = []
                 for m, n in matches:
                     if m.distance < 0.75 * n.distance:
                         good.append([m])
-                        #print m.distance
+                        valid_distance += 1
 
-                detection = 9
+                detection = valid_distance
 
-                '''TODO: If you are a group of 2, make sure to create your custom algorithm and added to the list after detection'''
-                orb = cv2.ORB_create(nfeatures=20)
+                '''Applying ORB'''
+                orb = cv2.ORB_create(nfeatures=500)
 
                 kp, des = orb.detectAndCompute(img, None)
                 kp2, des2 = orb.detectAndCompute(template, None)
 
-                # Brute Force Matching
-                bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
-                matches = bf.match(des, des2)
+                # BFMatcher with default params
+                bf = cv2.BFMatcher()
+                matches = bf.knnMatch(des, des2, k=2)
 
-                sorted_matches = sorted(matches, key=lambda x: x.distance)
+                # print 'printing sorted for image:' + str(i) + ' and template:' + str(j)
+                # Apply ratio test
+                valid_distance = 0
+                good = []
+                for m, n in matches:
+                    if m.distance < 0.75 * n.distance:
+                        good.append([m])
+                        valid_distance += 1
 
-                average = 0
-                total = 0
-                for k in range(len(sorted_matches)):
-                    average += sorted_matches[k].distance
-                    total += 1
-                average /= total
                 #print sorted_matches[0].distance
-                detection2 = sorted_matches[0].distance
-                final_matches_list.append([inst.partition('\\')[2].split('.')[0], template_matching, color_histogram, detection, detection2])
+                detection2 = valid_distance
+                final_matches_list.append([inst.partition('\\')[2].split('.')[0], template_matching, color_histogram, detection, detection2, tmp.partition('\\')[2].split('.')[0]])
 
         return final_matches_list
 
@@ -122,19 +125,18 @@ class object_recognition():
                     for k in range(4):
                         if sorted_list[k][j+1] > 0.9:
                           score += 1
-                        result.append([sorted_list[k][0], sorted_list[k][j+1]])
+                        result.append([sorted_list[k][5], sorted_list[k][j+1]])
                     print result
                     score_list[j] = score
                     result = []
 
-                print '\t all scores sorted'
-                print sorted_list
-                sorted_scored_list.append([match_result_list[temp_index][0], score_list[0], score_list[1], score_list[2], score_list[3]])
-                print '\t top 4 scores'
+                sorted_scored_list.append([score_list[0], score_list[1], score_list[2], score_list[3]])
+                print 'top 4 scores'
                 print sorted_scored_list
+
                 '''clear for next image'''
                 temp_sort_list = []
-                sorted_top4 = []
+                sorted_scored_list =[]
                 score = 0
                 '''update temp_index to keep track of change in images'''
                 temp_sort_list.append(i)
@@ -190,7 +192,7 @@ if __name__ == '__main__':
       scoring_results, sorted_scored_top4 = obj_rec.scoring(matching_results)
       evaluation_results = obj_rec.eval_cal(scoring_results)
 
-      print(dict(evaluation_results))
+      print(evaluation_results)
 
   except KeyboardInterrupt:
     print("Shutting down")
