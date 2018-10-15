@@ -103,7 +103,7 @@ class object_recognition():
         sorted_scored_list = []
         temp_index = 0
         score = 0
-        result = [0.0, 0.0, 0.0, 0.0, 0.0]
+        result = []
         result_list = []
         score_list = [0, 0, 0, 0]
         methods = ["Template Matching", "Color Histogram", "SIFT", "ORB"]
@@ -117,17 +117,15 @@ class object_recognition():
                 for j in range(4):
                     sorted_list = sorted(temp_sort_list,key = lambda x: x[j+1], reverse=True)
                     '''get the top4'''
+                    print 'for method: ' + str(methods[j])
                     #find the top 4 scored
                     for k in range(4):
                         if sorted_list[k][j+1] > 0.9:
                           score += 1
-                        print k
-                        print sorted_list
-                        result[k].append([sorted_list[k][0], sorted_list[k][j+1]])
-                    print 'for method: ' + str(methods[j])
+                        result.append([sorted_list[k][0], sorted_list[k][j+1]])
                     print result
                     score_list[j] = score
-                    result = [0.0, 0.0, 0.0, 0.0, 0.0]
+                    result = []
 
                 print '\t all scores sorted'
                 print sorted_list
