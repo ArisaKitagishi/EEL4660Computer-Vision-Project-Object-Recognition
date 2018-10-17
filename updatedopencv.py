@@ -32,6 +32,7 @@ class object_recognition():
             for c, col in enumerate(color):
                 hist = cv2.calcHist(img, [c], None, [256], [0, 256])
                 plt.xlim([0, 256])
+
             for j, tmp in enumerate(images):
                 template = cv2.imread(tmp, 0)
                 '''TODO: Apply template Matching'''
@@ -96,7 +97,6 @@ class object_recognition():
 
         return final_matches_list
 
-
     '''Return a dictionary with the score values and the top 4 dictionary'''
     def scoring(self, match_result_list):
         sorted_top4 = []
@@ -108,14 +108,15 @@ class object_recognition():
         score = 0
         result = []
         result_list = []
+        score_sum = [0.0, 0.0, 0.0, 0.0]
         score_list = [0, 0, 0, 0]
         methods = ["Template Matching", "Color Histogram", "SIFT", "ORB"]
         for i in match_result_list:
             if i[0] == match_result_list[temp_index][0]:
                 temp_sort_list.append(i)
             else:
-                print '***for ' + str(match_result_list[temp_index][0]) + '***'
-                '''sort the newly gotten scores for Template Matching'''
+                print '***Top 4 images with ' + str(match_result_list[temp_index][0]) + '***'
+                print '(name of image, result of match)'
                 # go through all 4 methods
                 for j in range(4):
                     sorted_list = sorted(temp_sort_list,key = lambda x: x[j+1], reverse=True)
@@ -130,13 +131,13 @@ class object_recognition():
                     #print the results from the method
                     print result
                     score_list[j] = score
+                    score_sum[j] += score
 
                     #empty result and score for next method
                     result = []
                     score = 0
-
                 sorted_scored_list.append([score_list[0], score_list[1], score_list[2], score_list[3]])
-                print 'Scores for all the methods: Template Matching, Color Histogram, SIFT, ORB'
+                print 'Scores for all the methods: Template Matching, Color Histogram, SIFT, ORB respectively'
                 print sorted_scored_list
 
                 '''clear for next image'''
@@ -147,6 +148,48 @@ class object_recognition():
                 temp_sort_list.append(i)
                 temp_index = match_result_list.index(i)
 
+        print '***Top 4 images with ' + str(match_result_list[temp_index][0]) + '***'
+        print '(name of image, result of match)'
+        # go through all 4 methods
+        for j in range(4):
+            sorted_list = sorted(temp_sort_list, key=lambda x: x[j + 1], reverse=True)
+            '''get the top4'''
+            print 'for method: ' + str(methods[j])
+            # find the top 4 results from the method
+            for k in range(4):
+                result.append([sorted_list[k][5], sorted_list[k][j + 1]])
+                if abs(int(sorted_list[k][5].partition('ukbench0')[2].split('.jpg')[0]) -
+                       int(match_result_list[temp_index][0].partition('ukbench0')[2].split('.jpg')[0])) < 3:
+                    score += 1
+            # print the results from the method
+            print result
+            score_list[j] = score
+            score_sum[j] += score
+
+            # empty result and score for next method
+            result = []
+            score = 0
+
+        #for last iteration or last image
+        sorted_scored_list.append([score_list[0], score_list[1], score_list[2], score_list[3]])
+        print 'Scores for all the methods: Template Matching, Color Histogram, SIFT, ORB respectively'
+        print sorted_scored_list
+
+        '''clear for next image'''
+        temp_sort_list = []
+        sorted_scored_list = []
+        score = 0
+        '''update temp_index to keep track of change in images'''
+        temp_sort_list.append(i)
+        temp_index = match_result_list.index(i)
+
+        score_sum[0] /= 20.0
+        score_sum[1] /= 20.0
+        score_sum[2] /= 20.0
+        score_sum[3] /= 20.0
+
+        print 'The Mean Scores are:'
+        print score_sum
         return match_result_list, sorted_scored_list
 
 
@@ -193,6 +236,7 @@ if __name__ == '__main__':
 
       for i in range(len(images)):
           template_images_list.append(cv2.imread(images[i], 0))
+
 
       matching_results = obj_rec.matching(query)
       scoring_results, sorted_scored_top4 = obj_rec.scoring(matching_results)
