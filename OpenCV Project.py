@@ -1,15 +1,3 @@
-# -*- coding: UTF-8 -*-
-# Arisa Kitagishi and Barbara Cotter
-# OpenCV Project
-
-# Instructions for use:
-# 1: Please place all 20 pictures in same directory as .py file
-# 2: When prompted please paste the path
-#    for the directory the picture are located
-#    then press enter
-# 3: If you would like to see every picture before you
-#    start the program 1st type Y else type N
-
 __author__ = '% Arisa Kitagishi and Barbara Cotter %'
 
 import cv2
@@ -166,6 +154,43 @@ class object_recognition():
                 '''update temp_index to keep track of change in images'''
                 temp_sort_list.append(i)
                 temp_index = match_result_list.index(i)
+
+        print '***for ' + str(match_result_list[temp_index][0]) + '***'
+        '''sort the newly gotten scores for Template Matching'''
+        # go through all 4 methods
+        for j in range(4):
+            sorted_list = sorted(temp_sort_list, key=lambda x: x[j + 1], reverse=True)
+            '''get the top4'''
+            print 'for method: ' + str(methods[j])
+            # find the top 4 results from the method
+            for k in range(4):
+                result.append([sorted_list[k][5], sorted_list[k][j + 1]])
+                if abs(int(sorted_list[k][5].partition('ukbench0')[2].split('.jpg')[0]) -
+                       int(match_result_list[temp_index][0].partition('ukbench0')[2].split('.jpg')[0])) < 3:
+                    score += 1
+            # print the results from the method
+            print result
+            score_list[j] = score
+
+            # empty result and score for next method
+            result = []
+            score = 0
+
+        sorted_scored_list.append([score_list[0], score_list[1], score_list[2], score_list[3]])
+        print 'Scores for all the methods: Template Matching, Color Histogram, SIFT, ORB'
+        print sorted_scored_list
+        templateAll.append(float(score_list[0]))
+        histAll.append(float(score_list[1]))
+        siftAll.append(float(score_list[2]))
+        orbAll.append(float(score_list[3]))
+
+        '''clear for next image'''
+        temp_sort_list = []
+        sorted_scored_list = []
+        score = 0
+        '''update temp_index to keep track of change in images'''
+        temp_sort_list.append(i)
+        temp_index = match_result_list.index(i)
 
         return match_result_list, sorted_scored_list
 
