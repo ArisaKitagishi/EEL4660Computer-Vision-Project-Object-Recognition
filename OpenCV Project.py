@@ -10,225 +10,269 @@
 # 3: If you would like to see every picture before you
 #    start the program 1st type Y else type N
 
+__author__ = '% Arisa Kitagishi and Barbara Cotter %'
+
 import cv2
-import time
-import numpy as np
-
-from matplotlib import pyplot as plt
 import glob
+import numpy as np
+import time
+from matplotlib import pyplot as plt
 
-def main():
-    list_of_pics = []
-    list_of_pics_gray_scale = []
-    list_of_pics_hist = []
-    scores = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
-    print "Please copy and paste the path where pictures are located"
-    direct = raw_input()
-    directory = glob.glob(direct+"\*.jpg")
-    for picfiles in directory:
-        image = cv2.imread(picfiles)
-        image_gray = cv2.imread(picfiles, 0)
-        list_of_pics.append(image)
-        list_of_pics_gray_scale.append(image_gray)
+'''images directory should by located inside your project main directory(Don't include it in the submission).'''
+# Path to dataset images/
+images = glob.glob('images/*.jpg')
 
-    j = 0
-    while j == 0:
-        print "If you would like to see the pictures before we start the program " \
-              "please type Y for yes and N for no"
-        in_put = raw_input()
-        if in_put == 'Y':
-            i = 0
-            while i < 20:
-                cv2.imshow("list_of_pics",np.array(list_of_pics[i]))
-                cv2.waitKey(0)
-                cv2.destroyAllWindows()
-                print "Image Shape:", np.array(list_of_pics[i]).shape
-                i += 1
+class object_recognition():
 
-            i = 0
-            while i < 20:
-                cv2.imshow("list_of_pics_gray_scale", np.array(list_of_pics_gray_scale[i]))
-                cv2.waitKey(0)
-                cv2.destroyAllWindows()
-                print "Image Shape:", np.array(list_of_pics_gray_scale[i]).shape
-                i += 1
-            break
-        elif in_put == 'N':
-            break
+    ''' If query_img = None, take the path to dataset by deault, else process single image and return the highes four of it.'''
+    def matching(self, query_input = None, query=None):
+        final_matches_list = []
+
+        if query_input is not None:
+            queue_label = query
+            query_input = query_images_list
         else:
-            print "............................................________ "
-            time.sleep(0.1)
-            print "....................................,.-‘”...................``~., "
-            time.sleep(0.1)
-            print ".............................,.-”...................................“-., "
-            time.sleep(0.1)
-            print ".........................,/...............................................”:, "
-            time.sleep(0.1)
-            print ".....................,/......................................................\, "
-            time.sleep(0.1)
-            print".................../...........................................................,} "
-            time.sleep(0.1)
-            print "................./......................................................,:`''`..} "
-            time.sleep(0.1)
-            print ".............../...................................................,:”........./ "
-            time.sleep(0.1)
-            print "............../.....__.........................................:`.........../"
-            time.sleep(0.1)
-            print "............./__.(.....“~-,_..............................,:`........../ "
-            time.sleep(0.1)
-            print ".........../(_....”~,_........“~,_....................,:`........_/ "
-            time.sleep(0.1)
-            print "..........{.._`;_......”=,_.......“-,_.......,.-~-,},.~”;/....}"
-            time.sleep(0.1)
-            print "...........((.....`~_.......”=-._......“;,,./`..../”............../"
-            time.sleep(0.1)
-            print "...,,,___.\`~,......“~.,....................`.....}............../ "
-            time.sleep(0.1)
-            print "............(....`=-,,.......`........................(......;_,,-” "
-            time.sleep(0.1)
-            print "............/.`~,......`-...............................\....../\ "
-            time.sleep(0.1)
-            print ".............\`~.*-,.....................................|,./.....\,__ "
-            time.sleep(0.1)
-            print ",,_..........}.>-._\...................................|..............`=~-, "
-            time.sleep(0.1)
-            print ".....`=~-,_\_......`\,.................................\ ................."
-            time.sleep(0.1)
-            print "...................`=~-,,.\,...............................\ ....................."
-            time.sleep(0.1)
-            print "................................`:,,...........................`\..............__ ......."
-            time.sleep(0.1)
-            print ".....................................`=-,...................,%`>--==`` ................"
-            time.sleep(0.1)
-            print "........................................_\..........._,-%.......`\ ......................"
-            time.sleep(0.1)
-            print "...................................,<`.._|_,-&``................`\ "
-            time.sleep(0.1)
-            print"Really?!?!? Please try again\n"
-            time.sleep(3)
+            queue_label = images
+            query_input = template_images_list
 
-    print "Image List Shape:", np.array(list_of_pics).shape
-    print "Image List Gray Shape:", np.array(list_of_pics_gray_scale).shape
-    method = 'cv2.TM_CCOEFF_NORMED'
-    method = eval(method)
+        for i, inst in enumerate(queue_label):
 
-    print "                         Method 1                           "
-    print "O(>V<)O                                              O(>V<)O"
-    time.sleep(0.5)
-    print "    _______ ___  __   __  ____  _       ___  _______ ___    "
-    time.sleep(0.5)
-    print "    __   __|    |  | |  ||    || |     / _ \ __   __|       "
-    time.sleep(0.5)
-    print "      | |  |--- |  | |  ||____|| |__  / /_\ \  | |  |---    "
-    time.sleep(0.5)
-    print "      | |  |___ |   |   ||     |____|/_/   \_\ | |  |___    "
-    time.sleep(0.5)
-    print " __   __    ___  _______  ____  _    _ _______  _      ____ "
-    time.sleep(0.5)
-    print "|  | |  |  / _ \ __   __ |  __|| |__| |__   __ | \  | |     "
-    time.sleep(0.5)
-    print "|  | |  | / /_\ \  | |   | |__ |  __  |__| |__ |  \ | | ---|"
-    time.sleep(0.5)
-    print "|   |   |/_/   \_\ | |   |____||_|  |_|_______ |   \| |____|"
-    time.sleep(3)
+            #Get the name of the image file without extension
 
-    i = 0
-    for query in list_of_pics_gray_scale:
-        k = 0
-        while k < 20:
-            pic = list_of_pics_gray_scale[k]
-            # Apply template Matching
-            res = cv2.matchTemplate(pic, query, method)
-            scores[i][k] = res
-            if scores[i][k] >= .9 and scores[i][k] <= 1:
-                print "Match of query image "+str(i+1)+" to image "+str(k+1)
-            k += 1
-        i += 1
-    print ""
-    print "As we can see using template matching does not"
-    time.sleep(1)
-    print "give good results because it has to almost be an"
-    time.sleep(1)
-    print "exact match for it to find a match"
-    time.sleep(5)
-    print ""
+            img = cv2.imread(inst, 0)
+            color = ('b', 'g', 'r')
+            for c, col in enumerate(color):
+                hist = cv2.calcHist(img, [c], None, [256], [0, 256])
+                plt.xlim([0, 256])
+            for j, tmp in enumerate(images):
+                template = cv2.imread(tmp, 0)
+                '''TODO: Apply template Matching'''
+                res = cv2.matchTemplate(img, template, cv2.TM_CCOEFF_NORMED)
+                template_matching = float(res)
 
-    print "                                       Method 2                                    "
-    print "O(>V<)O                                                                     O(>V<)O"
-    time.sleep(0.5)
-    print " _    _  _______ _______ _______  ______  ____    ______   ___    __   __  _______ "
-    time.sleep(0.5)
-    print "| |__| | __   __ |       __   __ |  __  | |      | _____| / _ \  |  | |  | |       "
-    time.sleep(0.5)
-    print "|  __  | __| |__  ------|  | |   | |__| | | ---| |  \    / /_\ \ |  | |  |  ------|"
-    time.sleep(0.5)
-    print "|_|  |_| _______ _______|  | |   |______| |____| |    \ /_/   \_\|   |   | _______|"
-    time.sleep(3)
+                '''TODO: Apply color histogram. OpenCV function is more faster than (around 40X) than np.histogram(). So stick with OpenCV function.'''
+                for c2, col2 in enumerate(color):
+                       hist2 = cv2.calcHist(template, [c2], None, [256], [0, 256])
+                       plt.xlim([0, 256])
 
-    color = ('b', 'g', 'r')
-    j = 0
-    while j < 20:
-        for i, col in enumerate(color):
-            hist = cv2.calcHist([list_of_pics[j]], [i], None, [256], [0, 256])
-            plt.plot(hist, color=col)
-            plt.xlim([0, 256])
-        list_of_pics_hist.append(hist)
-        plt.show()
-        j += 1
+                res = cv2.compareHist(hist, hist2, cv2.HISTCMP_CORREL)
+                color_histogram = res
 
-    i = 0
-    for query in list_of_pics_hist:
-        k = 0
-        while k < 20:
-            pic = list_of_pics_hist[k]
-            # Apply template Matching
-            res = cv2.compareHist(query, pic, cv2.HISTCMP_CORREL)
-            scores[i][k] = res
-            if scores[i][k] >= .9 and scores[i][k] <= 1:
-                print "Match of query image "+str(i+1)+" to image "+str(k+1)
-            k += 1
-        i += 1
+                # '''TODO: Apply SIFT, SURF, or ORB detection'''
+                # # if python 2, and you want to use SIFT, pip uninstall opencv-python and pip uninstall opencv-contrib-python
+                # # and then  pip install opencv-python==3.4.2.16 and pip install opencv-contrib-python==3.4.2.16
+                # #going to leave this comment for future reference
+                # sift = cv2.xfeatures2d.SIFT_create()
+                #
+                # # find the keypoints and descriptors with SIFT
+                # kp1, des1 = sift.detectAndCompute(img, None)
+                # kp2, des2 = sift.detectAndCompute(template, None)
+                #
+                # # BFMatcher with default params
+                # bf = cv2.BFMatcher()
+                # matches = bf.knnMatch(des1, des2, k=2)
+                #
+                # #print 'printing sorted for image:' + str(i) + ' and template:' + str(j)
+                # # Apply ratio test
+                # valid_distance = 0
+                # good = []
+                # for m, n in matches:
+                #     if m.distance < 0.75 * n.distance:
+                #         good.append([m])
+                #         valid_distance += 1
+                #
+                # detection = valid_distance
+                #
+                # '''Applying ORB'''
+                # orb = cv2.ORB_create(nfeatures=500)
+                #
+                # kp, des = orb.detectAndCompute(img, None)
+                # kp2, des2 = orb.detectAndCompute(template, None)
+                #
+                # # BFMatcher with default params
+                # bf = cv2.BFMatcher()
+                # matches = bf.knnMatch(des, des2, k=2)
+                #
+                # # print 'printing sorted for image:' + str(i) + ' and template:' + str(j)
+                # # Apply ratio test
+                # valid_distance = 0
+                # good = []
+                # for m, n in matches:
+                #     if m.distance < 0.75 * n.distance:
+                #         good.append([m])
+                #         valid_distance += 1
+                #
+                # #print sorted_matches[0].distance
+                # detection2 = valid_distance
+                detection = 8
+                detection2 = 9
+
+                final_matches_list.append([inst.partition('\\')[2].split('.')[0], template_matching, color_histogram, detection, detection2, tmp.partition('\\')[2].split('.')[0]])
+
+        return final_matches_list
 
 
-    time.sleep(5)
-    print ""
-    print "             Method 3            "
-    print "O(>V<)O                   O(>V<)O"
-    time.sleep(0.5)
-    print "_______  _______ _______ _______ "
-    time.sleep(0.5)
-    print "|        __   __ |       __   __ "
-    time.sleep(0.5)
-    print " ------| __| |__ |------   | |   "
-    time.sleep(0.5)
-    print "_______| _______ |         | |   "
-    time.sleep(3)
+    '''Return a dictionary with the score values and the top 4 dictionary'''
+    def scoring(self, match_result_list):
+        sorted_top4 = []
+        name_top4_list = []
+        name_list = []
+        temp_sort_list = []
+        sorted_scored_list = []
+        temp_index = 0
+        score = 0
+        result = []
+        result_list = []
+        score_list = [0, 0, 0, 0]
+        methods = ["Template Matching", "Color Histogram", "SIFT", "ORB"]
+        for i in match_result_list:
+            if i[0] == match_result_list[temp_index][0]:
+                temp_sort_list.append(i)
+            else:
+                print '***for ' + str(match_result_list[temp_index][0]) + '***'
+                '''sort the newly gotten scores for Template Matching'''
+                # go through all 4 methods
+                for j in range(4):
+                    sorted_list = sorted(temp_sort_list,key = lambda x: x[j+1], reverse=True)
+                    '''get the top4'''
+                    print 'for method: ' + str(methods[j])
+                    #find the top 4 results from the method
+                    for k in range(4):
+                        result.append([sorted_list[k][5], sorted_list[k][j+1]])
+                        if abs(int(sorted_list[k][5].partition('ukbench0')[2].split('.jpg')[0]) -
+                            int(match_result_list[temp_index][0].partition('ukbench0')[2].split('.jpg')[0])) < 3:
+                            score += 1
+                    #print the results from the method
+                    print result
+                    score_list[j] = score
 
-    sift = cv2.xfeatures2d.SIFT_create()
-    kp = sift.detect(list_of_pics_gray_scale[0], None)
-    img = cv2.drawKeypoints(list_of_pics_gray_scale[0], kp)
-    cv2.imshow("pic", img)
+                    #empty result and score for next method
+                    result = []
+                    score = 0
+
+                sorted_scored_list.append([score_list[0], score_list[1], score_list[2], score_list[3]])
+                print 'Scores for all the methods: Template Matching, Color Histogram, SIFT, ORB'
+                print sorted_scored_list
+                templateAll.append(float(score_list[0]))
+                histAll.append(float(score_list[1]))
+                siftAll.append(float(score_list[2]))
+                orbAll.append(float(score_list[3]))
+
+                '''clear for next image'''
+                temp_sort_list = []
+                sorted_scored_list =[]
+                score = 0
+                '''update temp_index to keep track of change in images'''
+                temp_sort_list.append(i)
+                temp_index = match_result_list.index(i)
+
+        return match_result_list, sorted_scored_list
 
 
-if __name__ == "__main__":
-    main()
+    def eval_cal(self, scoring_result):
+        pass
+        mean_tm = 0.0
+        mean_ch = 0.0
+        mean_dt = 0.0
+        mean_dt2 = 0.0
+        total = 0
+        '''Calculate the mean'''
+        for i in scoring_result:
+            mean_tm += scoring_result[total][1]
+            mean_ch += scoring_result[total][2]
+            mean_dt += scoring_result[total][3]
+            mean_dt2 += scoring_result[total][4]
+            total += 1
+
+        mean_tm /= total
+        mean_ch /= total
+        mean_dt /= total
+        mean_dt2 /= total
+        '''Uncomment the line below after'''
+        print 'mean of the results'
+        return [["Template_match_mean", mean_tm], ["color_histogram_mean", mean_ch], ["sift_detection_mean", mean_dt], ["orb_detection_mean", mean_dt2]]
+
+
+if __name__ == '__main__':
+
+    query_images_list = []
+    template_images_list = []
+    scores = np.zeros((20, 20), dtype=int)
+    templateAll = []
+    histAll = []
+    siftAll = []
+    orbAll = []
+    addAll = [0, 0, 0, 0]
+    finalMean = [0, 0, 0, 0]
+    standard_dev = [20]
+    query = None
+    my_image_names = ["Duck #1", "Duck #2", "Duck #3", "Duck #4",
+                      "Chair #1", "Chair #2", "Chair #3", "Chair #4",
+                      "Girl #1", "Girl #2", "Girl #3", "Girl #4",
+                      "Art #1", "Art #2", "Art #3", "Art #4",
+                      "Photos #1", "Photos #2", "Photos #3", "Photos #4"]
+    try:
+        obj_rec = object_recognition()
+
+        '''Run on query_img if argument passed, otherwise run on dataset'''
+        if query != None:
+
+            for query_img in query:
+                query_images_list.append(cv2.imread(query_img, 0))
+
+        for i in range(len(images)):
+            template_images_list.append(cv2.imread(images[i], 0))
+
+        matching_results = obj_rec.matching(query)
+        scoring_results, sorted_scored_top4 = obj_rec.scoring(matching_results)
+        evaluation_results = obj_rec.eval_cal(scoring_results)
+
+        sum = 0
+
+        print templateAll
+        print histAll
+        print siftAll
+        print orbAll
+
+        t = np.array(templateAll)
+        h = np.array(histAll)
+        s = np.array(siftAll)
+        o = np.array(orbAll)
+
+        stdT = t.std()
+        stdH = h.std()
+        stdS = s.std()
+        stdO = o.std()
+
+        for score_sum in templateAll:
+            sum += score_sum
+        addAll[0] = sum
+        finalMean[0] = addAll[0]/len(templateAll)
+
+        sum = 0
+        for score_sum in histAll:
+            sum += score_sum
+        addAll[1] = sum
+        finalMean[1] = addAll[1] / len(histAll)
+
+        sum = 0
+        for score_sum in siftAll:
+            sum += score_sum
+        addAll[2] = sum
+        finalMean[2] = addAll[2] / len(siftAll)
+
+        sum = 0
+        for score_sum in orbAll:
+            sum += score_sum
+        addAll[3] = sum
+        finalMean[3] = addAll[3] / len(orbAll)
+
+        print(evaluation_results)
+
+        print addAll
+        print finalMean
+
+
+    except KeyboardInterrupt:
+        print("Shutting down")
