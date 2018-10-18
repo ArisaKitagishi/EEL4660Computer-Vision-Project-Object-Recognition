@@ -143,10 +143,9 @@ class object_recognition():
                 histAll.append(float(score_list[1]))
                 siftAll.append(float(score_list[2]))
                 orbAll.append(float(score_list[3]))
-                # Clear the lists and score for next image
+                # Clear the lists and scores for next image
                 temp_sort_list = []
                 sorted_scored_list = []
-                score = 0
                 # Add the current image into list and update temp_index
                 temp_sort_list.append(i)
                 temp_index = match_result_list.index(i)
@@ -172,9 +171,6 @@ class object_recognition():
             print result
             # Store the obtained score for this method into score_list
             score_list[j] = score
-            # Empty result and score for next method
-            result = []
-            score = 0
 
         # Store the scores obtained in order of template matching, color histogram, SIFT, and ORB
         sorted_scored_list.append([score_list[0], score_list[1], score_list[2], score_list[3]])
