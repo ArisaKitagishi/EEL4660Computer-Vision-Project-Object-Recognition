@@ -217,7 +217,6 @@ if __name__ == '__main__':
 
     query_images_list = []
     template_images_list = []
-    scores = np.zeros((20, 20), dtype=int)
     templateAll = []
     histAll = []
     siftAll = []
